@@ -1,12 +1,3 @@
-/*
-LOAD DATA LOCAL INFILE 'F:/Maven Analytics/MySQL/Data Cleaning with MySQL/Nashville Housing Data for Data Cleaning(CSV) - Copy.csv' 
-INTO TABLE nashville_housing_2
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"' LINES 
-TERMINATED BY '\n' 
-IGNORE 1 LINES;
-*/
-
 SELECT*
 FROM nashville_housing_2;
 
@@ -115,18 +106,16 @@ SET SoldAsVacant = CASE When SoldAsVacant = 'Y' THEN 'Yes'
 
 WITH Remove_Duplicates AS(
 SELECT *,
-	ROW_NUMBER() OVER (
-	PARTITION BY ParcelID,
-				 PropertyAddress,
-				 SalePrice,
-				 SaleDate,
-				 LegalReference
-				 ORDER BY
-					UniqueID
-					) row_num
+ROW_NUMBER() OVER (
+PARTITION BY ParcelID,
+             PropertyAddress,
+	     SalePrice,
+	     SaleDate,
+	     LegalReference
+ORDER BY
+UniqueID) row_num
+FROM nashville_housing_2);
 
-FROM nashville_housing_2
-)
 SELECT * -- Swap with DELETE to remove the duplicated rows
 From Remove_Duplicates
 Where row_num > 1
